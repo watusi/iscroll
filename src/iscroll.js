@@ -76,6 +76,7 @@ var m = Math,
 			topOffset: 0,
 			bottomOffset: 0,
 			checkDOMChanges: false,		// Experimental
+      handleClick: true,
 
 			// Scrollbar
 			hScrollbar: true,
@@ -281,6 +282,8 @@ iScroll.prototype = {
 	},
 	
 	_pos: function (x, y) {
+		if (this.zoomed) return;
+
 		x = this.hScroll ? x : 0;
 		y = this.vScroll ? y : 0;
 
@@ -538,7 +541,7 @@ iScroll.prototype = {
 							that.options.onZoomEnd.call(that, e);
 						}, 200); // 200 is default zoom duration
 					}
-				} else {
+				} else if (this.options.handleClick) {
 					that.doubleTapTimer = setTimeout(function () {
 						that.doubleTapTimer = null;
 
@@ -687,8 +690,10 @@ iScroll.prototype = {
 
 		if (deltaY > that.minScrollY) deltaY = that.minScrollY;
 		else if (deltaY < that.maxScrollY) deltaY = that.maxScrollY;
-
-		that.scrollTo(deltaX, deltaY, 0);
+    
+    if(that.maxScrollY < 0){
+		  that.scrollTo(deltaX, deltaY, 0);
+    }
 	},
 	
 	_mouseout: function (e) {
